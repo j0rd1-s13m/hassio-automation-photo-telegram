@@ -1,0 +1,21 @@
+- alias: Photo_Telegram
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002b6d59b
+      from: 'off'
+      to: 'on'
+  action:
+  - data:
+      entity_id: camera.front_door
+      filename: /config/www/tmp/door_{{ now ().year }}_{{ now ().month }}_{{ now ().day }}_{{ now ().hour }}_{{ now ().minute }}.jpg
+    service: camera.snapshot
+  - delay:
+      seconds: 4      
+  - service: notify.Telegram
+    data:
+      title: "Presence door sensor"
+      message: "Hunted!"
+      data:
+        photo:
+          - file: /config/www/tmp/door_{{ now ().year }}_{{ now ().month }}_{{ now ().day }}_{{ now ().hour }}_{{ now ().minute }}.jpg
+            capture: Snapshoot
